@@ -143,38 +143,10 @@ class LoginController extends Controller
     public function register(customReq $request)
     {
 
-        $name = $request->name;
+        /*$name = $request->name;
         $email = $request->email;
         $password = $request->password;
-
-        /*
-        **Retrieving The Authenticated User
-        use Illuminate\Support\Facades\Auth;
-
-        // Get the currently authenticated user...
-        $user = Auth::user();
-
-        // Get the currently authenticated user's ID...
-        $id = Auth::id();
-        if (Auth::check()) {
-            // The user is logged in...
-        }
-
         */
-       // $input = $request->all();
-      /*  $user = Auth::user();
-
-        return response()->json(['error'=>'نام کاربری یا پسورد اشتباه است',"user"=>$user], 401); 
-     
-       // $data=$request->all();
-      //  $validator = validator($data);
-      $reg =['name' => $name,'email' => $email, 'password' => $password];
-
-      if (!Auth::attempt($reg)){
-        $user = Auth::user();
-
-        return response()->json(['error'=>'نام کاربری یا پسورد اشتباه است',"user"=>$user], 401); 
-      }*/
       
             $User = new User;
             $User->name = $request->input('name');
@@ -186,5 +158,31 @@ class LoginController extends Controller
             //   $order =  Orders::create($request->all());
         
     }
-
+   /* public function userRefreshToken(Request $request)
+    {
+    $client = DB::table('oauth_clients')
+        ->where('password_client', true)
+        ->first();
+    
+    $data = [
+        'grant_type' => 'refresh_token',
+        'refresh_token' => $request->refresh_token,
+        'client_id' => $client->id,
+        'client_secret' => $client->secret,
+        'scope' => ''
+    ];
+    $request = Request::create('/oauth/token', 'POST', $data);
+    $content = json_decode(app()->handle($request)->getContent());
+    
+    return response()->json([
+        'error' => false,
+        'data' => [
+            'meta' => [
+                'token' => $content->access_token,
+                'refresh_token' => $content->refresh_token,
+                'type' => 'Bearer'
+            ]
+        ]
+    ], Response::HTTP_OK);
+    }*/
 }
