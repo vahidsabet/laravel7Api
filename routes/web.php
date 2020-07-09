@@ -25,4 +25,8 @@ Route::post('orders/store', 'orderController@store');
 Route::put('orders/{id}', 'orderController@update');
 Route::delete('orders/{id}', 'orderController@delete');
 
+Route::post('user/create', 'Auth\RegisterController@userCreate');
 
+Auth::routes();
+
+Route::get('/dashboard', 'DashboardController@index');//->name('home');
