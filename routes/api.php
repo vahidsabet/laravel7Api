@@ -2,7 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-
+use Illuminate\Auth\Middleware\Authenticate;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -42,8 +42,40 @@ Route::delete('orders/{id}', function($id) {
     return 204;
 });
 */
-Route::middleware('auth:api')->get('/user', function (Request $request) {
+/*Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+Route::post('login', 'api/v1/UserController@login');
+*/
 
+//Route::post('register', 'UserController@register');
+//Route::post('refreshtoken', 'UserController@refreshToken');
+     /*
+Route::prefix('/user')->group(function(){
+    Route::post('register', 'api\v1\user\UserController@register');
+    Route::post('refreshtoken', 'api\v1\user\UserController@refreshToken');
+
+        Route::post('login', 'api\v1\user\UserController@login');
+
+        Route::group(['middleware' => ['auth:api']], function () {
+            Route::post('logout', 'api\v1\user\UserController@logout');
+            Route::post('details', 'api\v1\user\UserController@details');
+            Route::get('details', 'api\v1\user\UserController@details');
+    });
+});*/ 
+
+Route::prefix('/user')->group(function(){
+    Route::post('login', 'api\v1\LoginController@login');
+    
+    Route::group(['middleware' => ['auth:api']], function () {
+        Route::get('all','api\v1\user\userController@index');
+        Route::post('register','api\v1\LoginController@register');
+        Route::post('logout','api\v1\LoginController@logout');
+        Route::post('change_password', 'api\v1\LoginController@change_password');
+
+    });
+    
+
+   // Route::middleware('auth:api')->get('/all','api\v1\user\userController@index');
+});

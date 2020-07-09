@@ -4,7 +4,6 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator; 
-use Illuminate\Validation\ValidationException;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
 class customReq extends FormRequest
@@ -24,6 +23,7 @@ class customReq extends FormRequest
             'name.required' => 'نام را وارد نمایید',
             'password.required' => 'پسورد را وارد نمایید',
             'email.required' => 'ایمیل را وارد نمایید',
+            'email.email' => 'ایمیل معتبر وارد نمایید',
             'password.min' => 'حداقل 8 کاراکتر نیاز است',
             'email.unique' => 'ایمیل قبلا استفاده شده است',
         ];

@@ -122,6 +122,4 @@ class RegisterController extends Controller
         }
      
     }
-
-
 }
