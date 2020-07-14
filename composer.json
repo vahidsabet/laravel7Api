@@ -17,6 +17,7 @@
         "laravel/passport": "^9.3",
         "laravel/tinker": "^2.0",
         "laravel/ui": "^2.1",
+        "reliese/laravel": "^0.0.16",
         "santigarcor/laravel-vuetable": "^1.0"
     },
     "require-dev": {

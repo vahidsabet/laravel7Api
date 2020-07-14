@@ -1,8 +1,11 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Http\Requests\orderStateRequest;
+use Illuminate\Support\Facades\DB;
+
 use App\Orders;
 use Illuminate\Support\Facades\Validator;
 
@@ -20,6 +23,42 @@ class orderController extends Controller
             'data' => $orders, 'total' => count($orders)
         ]);*/
     }
+
+    public function orderState(orderStateRequest $request)
+    {
+
+        $validator = Validator::make($request->all(), [
+            'orderNo' => 'required',
+            'tel' => 'required'
+        ]);
+
+        if ($validator->fails()) {
+            $response = array('response' => $validator->errors(), 'success' => false);
+            return response()->json($response);
+        } else {
+            $orderNo = $request->input('orderNo');
+            $tel = $request->input('tel');
+
+            $count = DB::table('orders')->where([
+                            ['orderNo', '=', $orderNo],
+                            ['tel', '=',  $tel],
+                        ])->count();
+            if($count==0){
+                $response = array('response' => 'اطلاعاتی وجود ندارد', 'success' => false);
+                return response()->json($response);
+            }
+            $order = DB::table('orders')->select('cName', 'postSent','mSent','destAr','pCode')->where([
+                ['orderNo', '=', $orderNo],
+                ['tel', '=',  $tel],
+            ])->get();
+                
+             return response()->json($order, 201);
+
+            //   $order =  Orders::create($request->all());
+        }
+           
+    }
+
 
     public function show($id)
     {

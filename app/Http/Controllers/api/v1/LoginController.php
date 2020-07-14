@@ -9,7 +9,8 @@ use App\Http\Requests\customReq;
 use App\Http\Requests\UserChPasswordRequest;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
-
+use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Support\Facades\DB;
 
 use Laravel\Passport\Client as OClient;
 use GuzzleHttp\Exception\ClientException;
@@ -20,7 +21,7 @@ class LoginController extends Controller
    // public $successStatus = 200;
    const SUCCUSUS_STATUS_CODE = 200;
    const UNAUTHORISED_STATUS_CODE = 401;
-
+   use AuthenticatesUsers;
   /*      public function __construct(Client $client) {
                 $this->http = $client;
             }
@@ -43,7 +44,8 @@ class LoginController extends Controller
         $login =['email' => $email, 'password' => $password];
 
         if (!Auth::attempt($login)){
-            return response()->json(['error'=>'نام کاربری یا پسورد اشتباه است'], 401);  
+            $response = array('message' => 'نام کاربری یا پسورد اشتباه است', 'success' => false);
+            return response()->json($response, 401);  
         }
         /*if (Auth::attempt(['email' => $email, 'password' => $password])) {
             $response = $this->getTokenAndRefreshToken($email, $password);
@@ -56,7 +58,9 @@ class LoginController extends Controller
 
         return $this->response($data, $statusCode);*/
         $accessToken = Auth::user()->createToken('authToken')->accessToken;
-        return response()->json(['user'=>Auth::user(),'access_token'=>$accessToken], 201);  
+        $response = array('user'=>Auth::user(),'access_token'=>$accessToken, 'success' => true);
+
+        return response()->json($response , 201);  
 
      /*   
         $data=$request->all();
@@ -91,10 +95,10 @@ class LoginController extends Controller
         });
          $response = array('success' => true,'message' => 'با موفقیت خارج شدید');
          $code=200;
-    }else{
-           $response = array('success' => true,'message' => 'دسترسی غیر مجاز');
-         $code=401;
-    }
+        }else{
+            $response = array('success' => true,'message' => 'دسترسی غیر مجاز');
+            $code=401;
+        }
 
        /* DB::table('oauth_access_tokens')
         ->where('user_id', Auth::user()->id)
@@ -108,7 +112,7 @@ class LoginController extends Controller
 
     public function change_password(UserChPasswordRequest $request)
     {
-    /* $input = $request->all();
+    /*
         $userid = Auth::guard('api')->user()->id;
         $rules = array(
             'old_password' => 'required',
@@ -118,7 +122,13 @@ class LoginController extends Controller
         $validator = Validator::make($input, $rules);
         if ($validator->fails()) {
             $arr = array("status" => 400, "message" => $validator->errors()->first(), "data" => array());
-        } else {*/
+        } else {*/ 
+            $input = $request->all();
+            if (!Auth::check()) {
+                $response = array('success' => false,'message' => 'دسترسی غیر مجاز');
+                $code=422;
+                return response()->json($response,  $code);
+            }
             $userid = Auth::guard('api')->user()->id;
             $old_password = $request->old_password;
             $new_password = $request->new_password;
@@ -147,14 +157,30 @@ class LoginController extends Controller
         $email = $request->email;
         $password = $request->password;
         */
-      
+        //if (Auth::check()) {
             $User = new User;
+
+            $email= $request->input('email');
             $User->name = $request->input('name');
-            $User->email = $request->input('email');
+            $User->email = $email;
+
+           
+            $count = DB::table('users')->where([
+                ['email', '=', $email]
+            ])->count();
+            if($count>0){
+                $response = array('message' => 'کاربر از قبل وجود دارد', 'success' => false);
+                return response()->json($response,400);
+            }
+
             $User->password = Hash::make($request->input('password'));            
             $User->save();
-            $response = array('success' => true,"user"=>$User);
+            $response = array('success' => true);
             return response()->json($response, 201);
+       /* }else{
+            $response = array('success' => false,'message' => 'دسترسی غیر مجاز');            
+            return response()->json($response, 401);
+        }*/
             //   $order =  Orders::create($request->all());
         
     }

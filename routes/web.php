@@ -16,7 +16,10 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+Route::post('orders/orderState', 'orderController@orderState');
+//Route::post('users/login', 'userLoginController@login');
 
+/*
 //Route::resource('orders', 'orderController');
 Route::get('orders', 'orderController@index');
 //Route::resource('orders', 'orderController@index');
@@ -24,9 +27,9 @@ Route::get('orders/{id}', 'orderController@show');
 Route::post('orders/store', 'orderController@store');
 Route::put('orders/{id}', 'orderController@update');
 Route::delete('orders/{id}', 'orderController@delete');
+*/
+//Route::post('user/create', 'Auth\RegisterController@userCreate');
 
-Route::post('user/create', 'Auth\RegisterController@userCreate');
-
-Auth::routes();
+//Auth::routes();
 
 Route::get('/dashboard', 'DashboardController@index');//->name('home');

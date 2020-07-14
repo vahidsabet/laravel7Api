@@ -6,26 +6,27 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class UserLoginRequest extends FormRequest {
+class orderStateRequest extends FormRequest {
     const UNPROCESSABLE_ENTITY = 422;
 
     public function rules() {
         return [
-            'email' => 'required|email',
-            'password' => 'required',
+            'orderNo' => 'required',
+            'tel' => 'required',
           ];
     }
     public function messages()
     {
         return [            
-            'password.required' => 'پسورد را وارد نمایید',            
-            'email.required' => 'ایمیل را وارد نمایید',
+            'orderNo.required' => 'شماره سفارش را وارد نمایید',            
+            'tel.required' => 'تلفن را وارد نمایید',
            
         ];
     }
 
     protected function failedValidation(Validator $validator) {
         $response = array('errors' => $validator->errors(), 'success' => false);
+
         throw new HttpResponseException(response()->json($response, self::UNPROCESSABLE_ENTITY));
     }
 }

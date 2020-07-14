@@ -3,15 +3,16 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Contracts\Validation\Validator;
+
 use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Contracts\Validation\Validator;
 
 class UserChPasswordRequest extends FormRequest {
     const UNPROCESSABLE_ENTITY = 422;
 
     public function rules() {
         return [
-            'old_password' => 'required',
+            'old_password' => 'required|min:8',
             'new_password' => 'required|min:8',
             'confirm_password' => 'required|same:new_password',
           ];
@@ -24,10 +25,13 @@ class UserChPasswordRequest extends FormRequest {
             'confirm_password.required' => 'پسورد مجدد را وارد نمایید',
             'confirm_password.same' => 'پسورد یکسان نیست',          
             'new_password.min' => 'حداقل 8 کاراکتر نیاز است',           
+            'old_password.min' => 'حداقل 8 کاراکتر نیاز است',           
         ];
     }
 
     protected function failedValidation(Validator $validator) {
-        throw new HttpResponseException(response()->json($validator->errors(), self::UNPROCESSABLE_ENTITY));
+        $response = array('errors' => $validator->errors(), 'success' => false);
+        throw new HttpResponseException(response()->json($response, 422));
+        //return response()->json($response, 401);
     }
 }

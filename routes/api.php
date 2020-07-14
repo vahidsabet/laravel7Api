@@ -63,19 +63,32 @@ Route::prefix('/user')->group(function(){
             Route::post('details', 'api\v1\user\UserController@details');
             Route::get('details', 'api\v1\user\UserController@details');
     });
-});*/ 
+});*/  
+
+
+Route::group(['middleware' => ['auth:api']], function () {
+        Route::get('orders', 'api\v1\orderController@index');
+        Route::get('orders/{id}', 'api\v1\orderController@show');
+        Route::post('orders/{id}', 'api\v1\orderController@search');
+        Route::post('orders/store', 'api\v1\orderController@store');
+        Route::put('orders/{id}', 'api\v1\orderController@update');
+       // Route::delete('orders/{id}', 'api\v1\orderController@delete');
+
+        Route::get('takorders', 'api\v1\takOrderController@index');
+        Route::get('takorders/{id}', 'api\v1\takOrderController@show');
+        Route::post('takorders/store', 'api\v1\takOrderController@store');
+        Route::put('takorders/{id}', 'api\v1\takOrderController@update');
+
+    });
+
+Route::post('users/login', 'userLoginController@login');
 
 Route::prefix('/user')->group(function(){
-    Route::post('login', 'api\v1\LoginController@login');
-    
     Route::group(['middleware' => ['auth:api']], function () {
         Route::get('all','api\v1\user\userController@index');
         Route::post('register','api\v1\LoginController@register');
         Route::post('logout','api\v1\LoginController@logout');
         Route::post('change_password', 'api\v1\LoginController@change_password');
-
     });
-    
-
    // Route::middleware('auth:api')->get('/all','api\v1\user\userController@index');
 });

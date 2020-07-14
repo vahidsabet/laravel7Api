@@ -8,15 +8,7 @@ use Illuminate\Http\Exceptions\HttpResponseException;
 
 class customReq extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     *
-     * @return bool
-     */
-    public function authorize()
-    {
-        return true;
-    }
+    const UNPROCESSABLE_ENTITY = 422;
     public function messages()
     {
         return [
@@ -24,7 +16,7 @@ class customReq extends FormRequest
             'password.required' => 'پسورد را وارد نمایید',
             'email.required' => 'ایمیل را وارد نمایید',
             'email.email' => 'ایمیل معتبر وارد نمایید',
-            'password.min' => 'حداقل 8 کاراکتر نیاز است',
+            'password.min' => 'حداقل 8 کاراکتر پسورد نیاز است',
             'email.unique' => 'ایمیل قبلا استفاده شده است',
         ];
     }
@@ -44,10 +36,9 @@ class customReq extends FormRequest
 
     protected function failedValidation(Validator $validator)
     {
+        
         $response = array('errors' => $validator->errors(), 'success' => false);
-
-        throw new HttpResponseException(response()->json($response)); 
-
+        throw new HttpResponseException(response()->json($response, self::UNPROCESSABLE_ENTITY));
     /*    $response = new JsonResponse(['data' => [], 
                 'meta' => [
                     'message' => 'The given data is invalid', 
